@@ -3,6 +3,7 @@ package models.entities;
 import models.enums.DiscountType;
 import models.enums.OfferStatus;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
@@ -13,17 +14,19 @@ public class Promo {
     private Date startDate;
     private Date endDate;
     private DiscountType discountType;
+    private BigDecimal discountValue;
     private String conditions;
     private OfferStatus offerStatus;
     private UUID contractId;
 
-    public Promo(String offerName, String description, Date startDate, Date endDate, DiscountType discountType, String conditions, OfferStatus offerStatus, UUID contractId) {
+    public Promo(String offerName, String description, Date startDate, Date endDate, DiscountType discountType, BigDecimal discountValue, String conditions, OfferStatus offerStatus, UUID contractId) {
         this.id = UUID.randomUUID();
         this.offerName = offerName;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
         this.discountType = discountType;
+        this.discountValue = discountValue;
         this.conditions = conditions;
         this.offerStatus = offerStatus;
         this.contractId = contractId;
@@ -71,6 +74,14 @@ public class Promo {
 
     public void setDiscountType(DiscountType discountType) {
         this.discountType = discountType;
+    }
+
+    public BigDecimal getDiscountValue() {
+        return discountValue;
+    }
+
+    public void setDiscountValue(BigDecimal discountValue) {
+        this.discountValue = discountValue;
     }
 
     public String getConditions() {

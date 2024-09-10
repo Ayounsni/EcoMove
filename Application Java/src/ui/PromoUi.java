@@ -1,15 +1,12 @@
 package ui;
 
-
-
 import models.entities.Contract;
 import models.enums.DiscountType;
 import models.enums.OfferStatus;
 import services.ContractService;
 import services.PromoService;
 
-
-
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.Scanner;
 import java.util.UUID;
@@ -17,7 +14,7 @@ import java.util.UUID;
 public class PromoUi {
     private final Scanner scanner = new Scanner(System.in);
     private final PromoService promoService = new PromoService();
-    private  final ContractService contractService  = new ContractService();
+    private final ContractService contractService = new ContractService();
 
     public void showMenu() {
         boolean partnerRunning = true;
@@ -59,10 +56,11 @@ public class PromoUi {
     }
 
     public void create() {
-        UUID contractId , promoId;
-        String offerName,description,conditions;
-        Date startDate , endDate;
+        UUID contractId;
+        String offerName, description, conditions;
+        Date startDate, endDate;
         DiscountType discountType;
+        BigDecimal discountValue;
         OfferStatus offerStatus;
         System.out.print("Enter Contract ID to add a promo: ");
         contractId = UUID.fromString(scanner.nextLine());
@@ -74,25 +72,26 @@ public class PromoUi {
             offerName = scanner.nextLine();
             System.out.print("Description: ");
             description = scanner.nextLine();
-            System.out.print("Contract Start Date (YYYY-MM-DD): ");
+            System.out.print("Start Date (YYYY-MM-DD): ");
             startDate = Date.valueOf(scanner.nextLine());
-            System.out.print("Contract End Date (YYYY-MM-DD): ");
+            System.out.print("End Date (YYYY-MM-DD): ");
             endDate = Date.valueOf(scanner.nextLine());
             System.out.print("Conditions: ");
             conditions = scanner.nextLine();
             System.out.print("Discount Type: ");
             discountType = DiscountType.valueOf(scanner.nextLine().toUpperCase());
+            System.out.print("Discount Value: ");
+            discountValue = new BigDecimal(scanner.nextLine());
             System.out.print("Offer Status: ");
             offerStatus = OfferStatus.valueOf(scanner.nextLine().toUpperCase());
 
-            promoService.add(offerName, description, startDate,endDate, discountType, conditions,  offerStatus, contractId);
+            promoService.add(offerName, description, startDate, endDate, discountType, discountValue, conditions, offerStatus, contractId);
         } else {
             System.out.println("Contract not found with ID: " + contractId);
         }
-
     }
-    public void update(){
 
+    public void update() {
         System.out.print("Enter Promo ID to update: ");
         UUID promoId = UUID.fromString(scanner.nextLine());
 
@@ -114,18 +113,22 @@ public class PromoUi {
         System.out.print("Enter new Discount Type (e.g., percentage, fixed): ");
         DiscountType discountType = DiscountType.valueOf(scanner.nextLine().toUpperCase());
 
+        System.out.print("Enter new Discount Value: ");
+        BigDecimal discountValue = new BigDecimal(scanner.nextLine());
+
         System.out.print("Enter new Offer Status (e.g., active, expired): ");
         OfferStatus offerStatus = OfferStatus.valueOf(scanner.nextLine().toUpperCase());
 
-        promoService.edit(promoId, offerName, description, startDate, endDate,  discountType, conditions, offerStatus);
-
+        promoService.edit(promoId, offerName, description, startDate, endDate, discountType, discountValue, conditions, offerStatus);
     }
+
     public void delete() {
         System.out.print("Enter Promo ID to delete: ");
         UUID promoId = UUID.fromString(scanner.nextLine());
         promoService.delete(promoId);
     }
-    public void display(){
+
+    public void display() {
         promoService.display();
     }
 }
