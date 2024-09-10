@@ -1,4 +1,4 @@
-package dao;
+package dao.implementations;
 
 import db.DbFunctions;
 import models.entities.Contract;
@@ -20,7 +20,7 @@ public class ContractDao {
 
     public void addContract( Contract contract) {
 
-        String query = "INSERT INTO contract (id, startDate, endDate, specialRate, agreementConditions, renewable, contractStatus, partnerId) VALUES (?, ?, ?, ?, ?, ?, ?::contractstatus, ?)";
+        String query = "INSERT INTO contracts (id, startDate, endDate, specialRate, agreementConditions, renewable, contractStatus, partnerId) VALUES (?, ?, ?, ?, ?, ?, ?::contractstatus, ?)";
         try (Connection conn = db.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setObject(1, contract.getId());
             stmt.setDate(2, new java.sql.Date(contract.getStartDate().getTime()));
@@ -40,7 +40,7 @@ public class ContractDao {
         }
     }
     public void updateContract(UUID contractId, Date startDate, Date endDate, BigDecimal specialRate, String agreementConditions, boolean renewable, ContractStatus contractStatus) {
-        String query = "UPDATE contract SET startDate = ?, endDate = ?, specialRate = ?, agreementConditions = ?, renewable = ?, contractStatus = ?::contractstatus WHERE id = ?";
+        String query = "UPDATE contracts SET startDate = ?, endDate = ?, specialRate = ?, agreementConditions = ?, renewable = ?, contractStatus = ?::contractstatus WHERE id = ?";
         try {
             int rowsUpdated = getRowsUpdated(contractId, startDate, endDate, specialRate, agreementConditions, renewable, contractStatus, query);
             if (rowsUpdated > 0) {
@@ -51,7 +51,7 @@ public class ContractDao {
         }
     }
     public void deleteContract(UUID contractId) {
-        String query = "DELETE FROM contract WHERE id = ?";
+        String query = "DELETE FROM contracts WHERE id = ?";
         try (Connection conn = db.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setObject(1, contractId);
 
@@ -64,7 +64,7 @@ public class ContractDao {
         }
     }
     public void displayContracts() {
-        String query = "SELECT * FROM contract";
+        String query = "SELECT * FROM contracts";
         try (Connection conn = db.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 UUID id = (UUID) rs.getObject("id");
@@ -103,7 +103,7 @@ public class ContractDao {
         }
     }
     public Contract getContractById(UUID contractId) {
-        String query = "SELECT * FROM contract WHERE id = ?";
+        String query = "SELECT * FROM contracts WHERE id = ?";
         try (Connection conn = db.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setObject(1, contractId);
             try (ResultSet rs = stmt.executeQuery()) {

@@ -1,4 +1,4 @@
-package dao;
+package dao.implementations;
 
 import db.DbFunctions;
 import models.entities.Promo;
@@ -16,9 +16,9 @@ public class PromoDao {
         this.db = DbFunctions.getInstance();
     }
 
-    // Méthode pour ajouter une nouvelle promotion
+
     public void addPromo(Promo promo) {
-        String query = "INSERT INTO promo (id, offerName, description, startDate, endDate, discountType, conditions, offerStatus, contractId) VALUES (?, ?, ?, ?, ?, ?::discounttype, ?, ?::offerstatus, ?)";
+        String query = "INSERT INTO promos (id, offerName, description, startDate, endDate, discountType, conditions, offerStatus, contractId) VALUES (?, ?, ?, ?, ?, ?::discounttype, ?, ?::offerstatus, ?)";
         try (Connection conn = db.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setObject(1, promo.getId());
             stmt.setString(2, promo.getOfferName());
@@ -52,9 +52,9 @@ public class PromoDao {
         }
     }
 
-    // Méthode pour supprimer une promotion
+
     public void deletePromo(UUID promoId) {
-        String query = "DELETE FROM promo WHERE id = ?";
+        String query = "DELETE FROM promos WHERE id = ?";
         try (Connection conn = db.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setObject(1, promoId);
 
@@ -67,9 +67,9 @@ public class PromoDao {
         }
     }
 
-    // Méthode pour afficher toutes les promotions
+
     public void displayPromos() {
-        String query = "SELECT * FROM promo";
+        String query = "SELECT * FROM promos";
         try (Connection conn = db.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 UUID id = (UUID) rs.getObject("id");
@@ -98,7 +98,7 @@ public class PromoDao {
         }
     }
 
-    // Méthode privée pour gérer la mise à jour
+
     private int getRowsUpdated(UUID promoId, String offerName, String description, Date startDate, Date endDate, DiscountType discountType, String conditions, OfferStatus offerStatus, String query) throws SQLException {
         try (Connection conn = db.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, offerName);

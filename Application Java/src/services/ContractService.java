@@ -1,6 +1,6 @@
 package services;
 
-import dao.ContractDao;
+import dao.implementations.ContractDao;
 import models.entities.Contract;
 import models.enums.ContractStatus;
 

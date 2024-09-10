@@ -1,6 +1,6 @@
 package services;
 
-import dao.TicketDao;
+import dao.implementations.TicketDao;
 import models.entities.Ticket;
 import models.enums.TicketStatus;
 import models.enums.TransportType;

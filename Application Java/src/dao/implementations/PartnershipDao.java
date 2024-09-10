@@ -1,6 +1,5 @@
-package dao;
+package dao.implementations;
 
-import com.sun.jdi.connect.Transport;
 import db.DbFunctions;
 import models.entities.Partner;
 import models.enums.PartnerStatus;
@@ -26,7 +25,7 @@ public class PartnershipDao {
 
 
     public void addPartner(Partner partner) {
-        String query = "INSERT INTO partner (id, companyName, businessContact, transportType, geographicZone, specialConditions, partnerStatus, creationDate) VALUES (?, ?, ?, ?::transporttype, ?, ?, ?::partnerstatus, ?)";
+        String query = "INSERT INTO partners (id, companyName, businessContact, transportType, geographicZone, specialConditions, partnerStatus, creationDate) VALUES (?, ?, ?, ?::transporttype, ?, ?, ?::partnerstatus, ?)";
         try {
             int rowsInserted = getRowsInserted(partner, query);
             if (rowsInserted > 0) {
@@ -39,7 +38,7 @@ public class PartnershipDao {
 
 
     public void modifyPartner(UUID partnerId, String companyName, String businessContact, TransportType transportType, String geographicZone, String specialConditions, PartnerStatus partnerStatus, Date creationDate) {
-        String query = "UPDATE partner SET companyName = ?, businessContact = ?, transportType = ?::transporttype, geographicZone = ?, specialConditions = ?, partnerStatus = ?::partnerstatus, creationDate = ? WHERE id = ?";
+        String query = "UPDATE partners SET companyName = ?, businessContact = ?, transportType = ?::transporttype, geographicZone = ?, specialConditions = ?, partnerStatus = ?::partnerstatus, creationDate = ? WHERE id = ?";
         try {
             int rowsUpdated = getRowsUpdated(partnerId, companyName, businessContact, transportType, geographicZone, specialConditions, partnerStatus, creationDate, query);
             if (rowsUpdated > 0) {
@@ -52,7 +51,7 @@ public class PartnershipDao {
 
 
     public void deletePartner(UUID partnerId) {
-        String query = "DELETE FROM partner WHERE id = ?";
+        String query = "DELETE FROM partners WHERE id = ?";
         try (Connection conn = db.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setObject(1, partnerId);
             int rowsDeleted = stmt.executeUpdate();
@@ -65,26 +64,8 @@ public class PartnershipDao {
     }
 
 
-    public void displayPartners() {
-        String query = "SELECT * FROM partner";
-        try (Connection conn = db.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                UUID id = (UUID) rs.getObject("id");
-                String companyName = rs.getString("companyName");
-                String businessContact = rs.getString("businessContact");
-                String transportType = rs.getString("transportType");
-                String geographicZone = rs.getString("geographicZone");
-                String specialConditions = rs.getString("specialConditions");
-                String partnerStatus = rs.getString("partnerStatus");
-                Date creationDate = rs.getDate("creationDate");
-            }
-        } catch (SQLException e) {
-            System.err.println("An error occurred while retrieving partners: " + e.getMessage());
-        }
-    }
-
     public List<Partner> findAll() {
-        String query = "SELECT * FROM partner";
+        String query = "SELECT * FROM partners";
         List<Partner> partners = new ArrayList<>();
         try (Connection conn = db.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
@@ -137,7 +118,7 @@ public class PartnershipDao {
     }
 
     public Partner getPartnerById(UUID partnerId) {
-        String query = "SELECT * FROM partner WHERE id = ?";
+        String query = "SELECT * FROM partners WHERE id = ?";
         try (Connection conn = db.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setObject(1, partnerId);
             try (ResultSet rs = stmt.executeQuery()) {

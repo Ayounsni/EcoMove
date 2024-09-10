@@ -1,4 +1,4 @@
-package dao;
+package dao.implementations;
 
 import db.DbFunctions;
 import models.entities.Ticket;
@@ -19,7 +19,7 @@ public class TicketDao {
 
 
     public void addTicket(Ticket ticket) {
-        String query = "INSERT INTO ticket (id, transportType, purchasePrice, salePrice, saleDate, ticketStatus, contractId) VALUES (?, ?::transporttype, ?, ?, ?, ?::ticketstatus, ?)";
+        String query = "INSERT INTO tickets (id, transportType, purchasePrice, salePrice, saleDate, ticketStatus, contractId) VALUES (?, ?::transporttype, ?, ?, ?, ?::ticketstatus, ?)";
         try (Connection conn = db.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setObject(1, ticket.getId());
             stmt.setObject(2, ticket.getTransportType().name(), java.sql.Types.OTHER);
@@ -40,7 +40,7 @@ public class TicketDao {
 
 
     public void updateTicket(UUID ticketId, TransportType transportType, BigDecimal purchasePrice, BigDecimal salePrice, Date saleDate, TicketStatus ticketStatus) {
-        String query = "UPDATE ticket SET transportType = ?::transporttype, purchasePrice = ?, salePrice = ?, saleDate = ?, ticketStatus = ?::ticketstatus WHERE id = ?";
+        String query = "UPDATE tickets SET transportType = ?::transporttype, purchasePrice = ?, salePrice = ?, saleDate = ?, ticketStatus = ?::ticketstatus WHERE id = ?";
         try {
             int rowsUpdated = getRowsUpdated(ticketId, transportType, purchasePrice, salePrice, saleDate, ticketStatus, query);
             if (rowsUpdated > 0) {
@@ -53,7 +53,7 @@ public class TicketDao {
 
 
     public void deleteTicket(UUID ticketId) {
-        String query = "DELETE FROM ticket WHERE id = ?";
+        String query = "DELETE FROM tickets WHERE id = ?";
         try (Connection conn = db.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setObject(1, ticketId);
 
@@ -68,7 +68,7 @@ public class TicketDao {
 
 
     public void displayTickets() {
-        String query = "SELECT * FROM ticket";
+        String query = "SELECT * FROM tickets";
         try (Connection conn = db.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 UUID id = (UUID) rs.getObject("id");

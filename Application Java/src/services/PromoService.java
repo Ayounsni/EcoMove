@@ -1,6 +1,6 @@
 package services;
 
-import dao.PromoDao;
+import dao.implementations.PromoDao;
 import models.entities.Promo;
 import models.enums.DiscountType;
 import models.enums.OfferStatus;

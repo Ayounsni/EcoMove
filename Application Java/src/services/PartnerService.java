@@ -1,10 +1,9 @@
 package services;
 
-import dao.PartnershipDao;
+import dao.implementations.PartnershipDao;
 import models.entities.Partner;
 import models.enums.PartnerStatus;
 import models.enums.TransportType;
-import utils.InputValidator;
 
 import java.sql.Date;
 import java.util.List;

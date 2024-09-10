@@ -38,7 +38,7 @@ public class DbFunctions {
         try {
             if (conn == null || conn.isClosed()) {
 
-                connect_to_db("Java", "postgres", "0000");
+                connect_to_db("EcoMove", "postgres", "0000");
             }
         } catch (SQLException e) {
             System.err.println("An error occurred while checking the connection: " + e.getMessage());
