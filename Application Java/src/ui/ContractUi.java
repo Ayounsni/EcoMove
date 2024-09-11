@@ -5,8 +5,8 @@ package ui;
 import models.entities.Partner;
 import models.enums.ContractStatus;
 
-import services.ContractService;
-import services.PartnerService;
+import services.implementations.ContractService;
+import services.implementations.PartnerService;
 import utils.InputValidator;
 
 import java.math.BigDecimal;

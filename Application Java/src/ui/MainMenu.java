@@ -14,6 +14,8 @@ public class MainMenu {
     private final ContractUi contractUi = new ContractUi();
     private final PromoUi promoUi = new PromoUi();
     private final TicketUi ticketUi = new TicketUi();
+    private final ClientUi clientUi = new ClientUi();
+
 
     public void showMainMenu() {
         boolean running = true;
@@ -25,7 +27,8 @@ public class MainMenu {
             System.out.println("2. Contract Manager");
             System.out.println("3. Promo Manager");
             System.out.println("4. Ticket Manager");
-            System.out.println("5. Exit");
+            System.out.println("5. Authentification Client");
+            System.out.println("6. Exit");
             System.out.print("Choose an option: ");
             int mainChoice = scanner.nextInt();
             scanner.nextLine();
@@ -45,6 +48,9 @@ public class MainMenu {
                     ticketUi.showMenu();
                     break;
                 case 5:
+                    clientUi.showMenu();
+                    break;
+                case 6:
                     running = false;
                     System.out.println("Exiting the system.");
                     break;

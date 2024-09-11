@@ -5,8 +5,8 @@ package ui;
 import models.entities.Contract;
 import models.enums.TicketStatus;
 import models.enums.TransportType;
-import services.ContractService;
-import services.TicketService;
+import services.implementations.ContractService;
+import services.implementations.TicketService;
 
 
 import java.math.BigDecimal;

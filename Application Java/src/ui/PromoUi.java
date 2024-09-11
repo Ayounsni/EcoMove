@@ -3,8 +3,8 @@ package ui;
 import models.entities.Contract;
 import models.enums.DiscountType;
 import models.enums.OfferStatus;
-import services.ContractService;
-import services.PromoService;
+import services.implementations.ContractService;
+import services.implementations.PromoService;
 
 import java.math.BigDecimal;
 import java.sql.Date;

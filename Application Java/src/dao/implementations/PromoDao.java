@@ -2,6 +2,7 @@ package dao.implementations;
 
 import db.DbFunctions;
 import models.entities.Promo;
+import models.enums.ContractStatus;
 import models.enums.DiscountType;
 import models.enums.OfferStatus;
 
@@ -40,7 +41,7 @@ public class PromoDao {
         }
     }
 
-    // Méthode pour mettre à jour une promotion existante
+
     public void updatePromo(UUID promoId, String offerName, String description, Date startDate, Date endDate, DiscountType discountType, BigDecimal discountValue, String conditions, OfferStatus offerStatus) {
         String query = "UPDATE promos SET offerName = ?, description = ?, startDate = ?, endDate = ?, discountType = ?::discounttype, discountValue = ?, conditions = ?, offerStatus = ?::offerstatus WHERE id = ?";
         try {
@@ -76,10 +77,11 @@ public class PromoDao {
                 String description = rs.getString("description");
                 Date startDate = rs.getDate("startDate");
                 Date endDate = rs.getDate("endDate");
-                DiscountType discountType = DiscountType.valueOf(rs.getString("discountType"));
+                DiscountType discountType = DiscountType.valueOf(rs.getString("discountType").toUpperCase());
+
                 BigDecimal discountValue = rs.getBigDecimal("discountValue");
                 String conditions = rs.getString("conditions");
-                OfferStatus offerStatus = OfferStatus.valueOf(rs.getString("offerStatus"));
+                OfferStatus offerStatus = OfferStatus.valueOf(rs.getString("offerStatus").toUpperCase());
                 UUID contractId = (UUID) rs.getObject("contractId");
 
                 System.out.println("Promo ID: " + id);

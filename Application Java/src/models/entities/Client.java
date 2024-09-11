@@ -1,5 +1,7 @@
 package models.entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Client {
@@ -9,8 +11,11 @@ public class Client {
     private String lastname;
     private String email;
     private String phone;
+    private final List<Reservation> reservations;
 
     public Client() {
+
+        this.reservations = new ArrayList<>();
     }
 
     public Client(String firstname, String lastname, String email, String phone) {
@@ -19,6 +24,7 @@ public class Client {
         this.lastname = lastname;
         this.email = email;
         this.phone = phone;
+        this.reservations = new ArrayList<>();
     }
 
     // Getters et Setters
@@ -60,6 +66,9 @@ public class Client {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+    public List<Reservation> getReservations() {
+        return reservations;
     }
 }
 

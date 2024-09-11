@@ -3,7 +3,7 @@ package ui;
 import models.entities.Partner;
 import models.enums.PartnerStatus;
 import models.enums.TransportType;
-import services.PartnerService;
+import services.implementations.PartnerService;
 import utils.InputValidator;
 
 import java.sql.Date;

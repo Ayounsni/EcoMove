@@ -1,4 +1,4 @@
-package services;
+package services.implementations;
 
 import dao.implementations.PartnershipDao;
 import models.entities.Partner;
