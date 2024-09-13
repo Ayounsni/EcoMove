@@ -23,11 +23,11 @@ public class DbFunctions {
             if (conn == null || conn.isClosed()) {
                 Class.forName("org.postgresql.Driver");
                 conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/" + dbname, user, pass);
-                if (conn != null) {
-                    System.out.println("Connected to database");
-                } else {
-                    System.out.println("Failed to connect to database");
-                }
+//                if (conn != null) {
+//                    System.out.println("Connected to database");
+//                } else {
+//                    System.out.println("Failed to connect to database");
+//                }
             }
         } catch (Exception e) {
             System.err.println("An error occurred: " + e.getMessage());

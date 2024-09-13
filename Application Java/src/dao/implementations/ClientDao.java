@@ -64,18 +64,26 @@ public class ClientDao implements IClientDao {
     }
 
     @Override
-    public String deleteClient(String email) {
-        String query = "DELETE FROM clients WHERE email = ?";
+    public boolean updateClient(Client client) {
+        String query = "UPDATE clients SET firstname = ?, lastname = ?, phone = ? WHERE id = ?";
+
         try (Connection conn = db.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
-            stmt.setString(1, email);
-            stmt.executeUpdate();
-            return email;
+            stmt.setString(1, client.getFirstname());
+            stmt.setString(2, client.getLastname());
+            stmt.setString(3, client.getPhone());
+            stmt.setObject(4, client.getId());
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+            return false;
         }
     }
+
+
+
 }

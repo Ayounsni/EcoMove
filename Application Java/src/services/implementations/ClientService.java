@@ -20,4 +20,20 @@ public class ClientService implements IClientService {
     public Client getClientByEmail(String email) {
         return clientDao.findClientByEmail(email);
     }
+
+    @Override
+    public boolean updateClient(Client client) {
+        Client existingClient = clientDao.findClientByEmail(client.getEmail());
+
+        if (existingClient == null) {
+            return false;
+        }
+
+        existingClient.setFirstname(client.getFirstname());
+        existingClient.setLastname(client.getLastname());
+        existingClient.setPhone(client.getPhone());
+
+        return clientDao.updateClient(existingClient);
+    }
+
 }

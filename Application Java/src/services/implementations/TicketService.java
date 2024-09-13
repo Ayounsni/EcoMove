@@ -1,37 +1,59 @@
 package services.implementations;
 
 import dao.implementations.TicketDao;
+import dao.implementations.TrajetDao;
+import dao.interfaces.ITicketDao;
 import models.entities.Ticket;
 import models.enums.TicketStatus;
 import models.enums.TransportType;
+import services.interfaces.ITicketService;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 import java.util.UUID;
 
-public class TicketService {
-    private final TicketDao ticketDao;
+public class TicketService implements ITicketService {
+    private final ITicketDao ticketDao;
 
     public TicketService() {
         this.ticketDao = new TicketDao();
     }
 
-    public void add(TransportType transportType, BigDecimal purchasePrice, BigDecimal salePrice, Date saleDate, TicketStatus ticketStatus, UUID contractId) {
-        Ticket ticket = new Ticket(transportType, purchasePrice, salePrice, saleDate, ticketStatus, contractId);
-        ticketDao.addTicket(ticket);
+    @Override
+    public Ticket add(TransportType transportType, BigDecimal purchasePrice, BigDecimal salePrice, LocalDate saleDate, LocalDate departureDate, LocalTime departureTime, UUID contractId, UUID trajetId) {
+        Ticket ticket = new Ticket(
+                transportType,
+                purchasePrice,
+                salePrice,
+                saleDate,
+                departureDate,
+                departureTime,
+                contractId,
+                trajetId != null ? new TrajetDao().findById(trajetId) : null
+        );
+        return ticketDao.create(ticket);
     }
 
-    public void edit(UUID ticketId, TransportType transportType, BigDecimal purchasePrice, BigDecimal salePrice, Date saleDate, TicketStatus ticketStatus) {
-        ticketDao.updateTicket(ticketId, transportType, purchasePrice, salePrice, saleDate, ticketStatus);
+    @Override
+    public boolean updateTicketStatus(UUID ticketId, TicketStatus ticketStatus) {
+        Ticket ticket = ticketDao.findById(ticketId);
+        if (ticket == null) {
+            return false;
+        }
+        ticket.setTicketStatus(ticketStatus);
+        return ticketDao.updateTicketStatus(ticketId, ticketStatus);
     }
 
-    public void deleteTicket(UUID ticketId) {
-        ticketDao.deleteTicket(ticketId);
+
+    @Override
+    public boolean delete(UUID ticketId) {
+        return ticketDao.delete(ticketId);
     }
 
-    public void display() {
-        ticketDao.displayTickets();
+    @Override
+    public List<Ticket> getAllTickets() {
+        return ticketDao.findAll();
     }
-
-
 }

@@ -1,5 +1,7 @@
 package models.entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Trajet {
@@ -8,6 +10,7 @@ public class Trajet {
     private int dure;
     private City cityD;
     private City cityA;
+    private List<Ticket> tickets;
 
 
     public Trajet() {
@@ -19,7 +22,17 @@ public class Trajet {
         this.dure = dure;
         this.cityD = cityD;
         this.cityA = cityA;
+        this.tickets = new ArrayList<>();
     }
+
+    public Trajet( int dure, City cityD, City cityA , UUID id) {
+        this.dure = dure;
+        this.cityD = cityD;
+        this.cityA = cityA;
+        this.id = id;
+        this.tickets = new ArrayList<>();
+    }
+
 
 
 
@@ -52,6 +65,9 @@ public class Trajet {
 
     public void setCityA(City cityA) {
         this.cityA = cityA;
+    }
+    public List<Ticket> getTickets() {
+        return tickets;
     }
 }
 

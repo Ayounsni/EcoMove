@@ -13,7 +13,7 @@ public class ClientUi {
     private final IClientService clientService;
 
     public ClientUi() {
-          this.clientService = new ClientService(new ClientDao());;
+          this.clientService = new ClientService(new ClientDao());
     }
 
     public void showMenu() {
@@ -45,7 +45,7 @@ public class ClientUi {
 
     private void login() {
         System.out.print("Entrez votre email : ");
-        String email = scanner.nextLine();
+        String email = scanner.nextLine().toLowerCase();
         Client client = clientService.getClientByEmail(email);
 
         if (client == null) {
@@ -58,7 +58,39 @@ public class ClientUi {
             }
         } else {
             System.out.println("Connexion réussie. Bienvenue, " + client.getFirstname() + " " + client.getLastname());
-            // Ici, vous pouvez continuer avec les options de réservation
+            boolean running = true;
+            while (running) {
+                System.out.println("\nMenu:");
+
+                System.out.println("1. Chercher des tickets");
+                System.out.println("2. Mes reservations");
+                System.out.println("3. Mon profil");
+                System.out.println("4. Modifier mes informations");
+                System.out.println("5. Deconnexion");
+                System.out.print("Choisissez une option : ");
+                int choice = scanner.nextInt();
+                scanner.nextLine();
+
+                switch (choice) {
+                    case 1:
+                        login();
+                        break;
+                    case 2:
+                        register();
+                        break;
+                    case 3:
+                        displayClientInfo(client);
+                        break;
+                    case 4:
+                        updateClientInfo(client);
+                        break;
+                    case 5:
+                        running = false;
+                        break;
+                    default:
+                        System.out.println("Choix invalide.");
+                }
+            }
         }
     }
 
@@ -72,7 +104,7 @@ public class ClientUi {
         String lastname = scanner.nextLine();
 
         System.out.print("Email : ");
-        String email = scanner.nextLine();
+        String email = scanner.nextLine().toLowerCase();
 
         System.out.print("Numéro de téléphone : ");
         String phone = scanner.nextLine();
@@ -86,4 +118,42 @@ public class ClientUi {
             System.out.println("L'email existe déjà. Essayez de vous connecter.");
         }
     }
+
+    private void updateClientInfo(Client client) {
+        System.out.println("Modifier vos informations :");
+
+        System.out.print("Prénom (" + client.getFirstname() + ") : ");
+        String firstname = scanner.nextLine();
+        if (!firstname.isEmpty()) {
+            client.setFirstname(firstname);
+        }
+
+        System.out.print("Nom (" + client.getLastname() + ") : ");
+        String lastname = scanner.nextLine();
+        if (!lastname.isEmpty()) {
+            client.setLastname(lastname);
+        }
+
+        System.out.print("Numéro de téléphone (" + client.getPhone() + ") : ");
+        String phone = scanner.nextLine();
+        if (!phone.isEmpty()) {
+            client.setPhone(phone);
+        }
+
+        boolean success = clientService.updateClient(client);
+        if (success) {
+            System.out.println("Informations mises à jour avec succès.");
+        } else {
+            System.out.println("Échec de la mise à jour des informations.");
+        }
+    }
+
+    private void displayClientInfo(Client client) {
+        System.out.println("\nVos informations actuelles :");
+        System.out.println("Prénom : " + client.getFirstname());
+        System.out.println("Nom : " + client.getLastname());
+        System.out.println("Email : " + client.getEmail());
+        System.out.println("Numéro de téléphone : " + client.getPhone());
+    }
+
 }

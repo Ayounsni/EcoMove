@@ -3,9 +3,12 @@ package ui;
 import db.DbFunctions;
 
 
+
 import java.util.Scanner;
 
 public class MainMenu {
+
+
     private final Scanner scanner = new Scanner(System.in);
 
     private final DbFunctions db = DbFunctions.getInstance();
@@ -15,6 +18,7 @@ public class MainMenu {
     private final PromoUi promoUi = new PromoUi();
     private final TicketUi ticketUi = new TicketUi();
     private final ClientUi clientUi = new ClientUi();
+    private final TrajetUi trajetUi = new TrajetUi();
 
 
     public void showMainMenu() {
@@ -28,7 +32,8 @@ public class MainMenu {
             System.out.println("3. Promo Manager");
             System.out.println("4. Ticket Manager");
             System.out.println("5. Authentification Client");
-            System.out.println("6. Exit");
+            System.out.println("6. Trajet Manager");
+            System.out.println("7. Exit");
             System.out.print("Choose an option: ");
             int mainChoice = scanner.nextInt();
             scanner.nextLine();
@@ -51,6 +56,9 @@ public class MainMenu {
                     clientUi.showMenu();
                     break;
                 case 6:
+                    trajetUi.showMenu();
+                    break;
+                case 7:
                     running = false;
                     System.out.println("Exiting the system.");
                     break;
