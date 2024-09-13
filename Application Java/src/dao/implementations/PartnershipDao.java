@@ -139,4 +139,29 @@ public class PartnershipDao {
         }
         return null;
     }
+
+    public String getPartnerName(UUID contractId) {
+        String partnerName = null;
+        String query = "SELECT p.companyname " +
+                "FROM contracts c " +
+                "JOIN partners p ON c.partnerid = p.id " +
+                "WHERE c.id = ?";
+
+
+
+        try (Connection conn = db.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setObject(1, contractId);
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                partnerName = rs.getString("companyname");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return partnerName;
+    }
 }

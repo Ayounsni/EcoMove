@@ -22,4 +22,6 @@ public interface ITicketService {
 
 
     List<Ticket> getAllTickets();
+
+    List<Ticket> searchTickets(String departureCity, String arrivalCity, LocalDate departureDate);
 }

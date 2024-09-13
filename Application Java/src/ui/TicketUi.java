@@ -2,12 +2,17 @@ package ui;
 
 
 
+import dao.implementations.CityDao;
+import models.entities.City;
 import models.entities.Contract;
 import models.entities.Ticket;
 import models.enums.TicketStatus;
 import models.enums.TransportType;
+import services.implementations.CityService;
 import services.implementations.ContractService;
+import services.implementations.PartnerService;
 import services.implementations.TicketService;
+import services.interfaces.ICityService;
 import services.interfaces.ITicketService;
 
 import java.math.BigDecimal;
@@ -21,11 +26,15 @@ public class TicketUi {
     private final Scanner scanner = new Scanner(System.in);
     private final ITicketService ticketService;
     private final ContractService contractService;
+    private final PartnerService partnerService = new PartnerService();
+    private final ICityService cityService;
+
 
 
     public TicketUi() {
         this.ticketService = new TicketService();
         this.contractService = new ContractService();
+        this.cityService = new CityService(new CityDao());
 
     }
 
@@ -154,6 +163,44 @@ public class TicketUi {
                     System.out.println("Aucun trajet associé.");
                 }
                 System.out.println("------------------------");
+            }
+        }
+    }
+
+    public void searchAndDisplayTickets() {
+        List<City> cities = cityService.findAll();
+        System.out.println("Liste des villes disponibles :");
+        for (City city : cities) {
+            System.out.println(city.getCityName().toLowerCase());
+        }
+        System.out.print("Entrez la ville de départ : ");
+        String departureCity = scanner.nextLine().toLowerCase();
+
+        System.out.print("Entrez la ville de destination : ");
+        String arrivalCity = scanner.nextLine();
+
+        System.out.print("Entrez la date de départ (YYYY-MM-DD) : ");
+        LocalDate departureDate = LocalDate.parse(scanner.nextLine());
+
+        List<Ticket> tickets = ticketService.searchTickets(departureCity, arrivalCity, departureDate);
+
+        if (tickets.isEmpty()) {
+            System.out.println("Aucun billet disponible pour les critères spécifiés.");
+        } else {
+            for (Ticket ticket : tickets) {
+                System.out.println("Company Name : " + partnerService.getPartnerName(ticket.getContractId()));
+                System.out.println("Type de transport : " + ticket.getTransportType());
+                System.out.println("Prix d'achat : " + ticket.getPurchasePrice());
+                System.out.println("Prix de vente : " + ticket.getSalePrice());
+                System.out.println("Date de vente : " + ticket.getSaleDate());
+                System.out.println("Date de départ : " + ticket.getDepartureDate());
+                System.out.println("Horaire de départ : " + ticket.getDepartureTime());
+                System.out.println("Statut du billet : " + ticket.getTicketStatus());
+                System.out.println("Trajet : ");
+                System.out.println("   Durée : " + ticket.getTrajet().getDuree()+ "minutes");
+                System.out.println("   Ville de départ : " + ticket.getTrajet().getCityDepart().getCityName());
+                System.out.println("   Ville d'arrivée : " + ticket.getTrajet().getCityA().getCityName());
+                System.out.println("------------------------------------------");
             }
         }
     }

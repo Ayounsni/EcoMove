@@ -2,6 +2,7 @@ package dao.implementations;
 
 import dao.interfaces.ITicketDao;
 import db.DbFunctions;
+import models.entities.City;
 import models.entities.Ticket;
 import models.entities.Trajet;
 import models.enums.TicketStatus;
@@ -128,5 +129,52 @@ public class TicketDao implements ITicketDao {
         Trajet trajet = trajetId != null ? trajetDao.findById(trajetId) : null;
 
         return new Ticket(transportType, purchasePrice, salePrice, saleDate, departureDate, departureTime,  contractId,ticketStatus, trajet, id);
+    }
+    @Override
+    public List<Ticket> findAvailableTickets(String departureCity, String arrivalCity, LocalDate departureDate) {
+        List<Ticket> tickets = new ArrayList<>();
+        String query = "SELECT t.id, t.transporttype, t.purchaseprice, t.saleprice, t.saledate, " +
+                "t.datedepart, t.horaire, t.ticketstatus, t.contractid, t.idtrajet, " +
+                "tr.duree, cD.cityname AS cityD, cA.cityname AS cityA " +
+                "FROM tickets t " +
+                "JOIN trajets tr ON t.idtrajet = tr.id " +
+                "JOIN cities cD ON tr.idcityd = cD.id " +
+                "JOIN cities cA ON tr.idcitya = cA.id " +
+                "WHERE cD.cityname = ? AND cA.cityname = ? AND t.datedepart = ? AND t.ticketstatus = 'PENDING'";
+
+
+        try (Connection conn = db.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, departureCity);
+            stmt.setString(2, arrivalCity);
+            stmt.setDate(3, Date.valueOf(departureDate));
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Ticket ticket = new Ticket(
+                        TransportType.valueOf(rs.getString("transporttype")),
+                        rs.getBigDecimal("purchaseprice"),
+                        rs.getBigDecimal("saleprice"),
+                        rs.getTimestamp("saledate").toLocalDateTime().toLocalDate(),
+                        rs.getDate("datedepart").toLocalDate(),
+                        rs.getTime("horaire").toLocalTime(),
+                        UUID.fromString(rs.getString("contractid")),
+                        TicketStatus.valueOf(rs.getString("ticketstatus")),
+                        new Trajet(
+                                rs.getInt("duree"),
+                                new City(rs.getString("cityD")),
+                                new City(rs.getString("cityA")),
+                                UUID.fromString(rs.getString("idtrajet"))
+                        ),
+                        UUID.fromString(rs.getString("id"))
+                );
+                tickets.add(ticket);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tickets;
     }
 }

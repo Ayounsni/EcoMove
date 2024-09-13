@@ -3,6 +3,7 @@ package dao.interfaces;
 import models.entities.Ticket;
 import models.enums.TicketStatus;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,5 +22,7 @@ public interface ITicketDao {
 
 
     boolean delete(UUID id);
+
+    List<Ticket> findAvailableTickets(String departureCity, String arrivalCity, LocalDate departureDate);
 }
 

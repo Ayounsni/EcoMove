@@ -11,6 +11,7 @@ public class ClientUi {
 
     private final Scanner scanner = new Scanner(System.in);
     private final IClientService clientService;
+    private final TicketUi ticketUi = new TicketUi();
 
     public ClientUi() {
           this.clientService = new ClientService(new ClientDao());
@@ -76,7 +77,7 @@ public class ClientUi {
                         login();
                         break;
                     case 2:
-                        register();
+                        ticketUi.searchAndDisplayTickets();
                         break;
                     case 3:
                         displayClientInfo(client);

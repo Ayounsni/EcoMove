@@ -43,4 +43,6 @@ public class PartnerService {
     public Partner getPartnerById(UUID partnerId) {
         return partnershipDao.getPartnerById(partnerId);
     }
+
+    public String getPartnerName(UUID contractId){return partnershipDao.getPartnerName(contractId);}
 }

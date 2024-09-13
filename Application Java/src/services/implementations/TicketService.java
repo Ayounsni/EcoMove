@@ -56,4 +56,9 @@ public class TicketService implements ITicketService {
     public List<Ticket> getAllTickets() {
         return ticketDao.findAll();
     }
+
+    @Override
+    public List<Ticket> searchTickets(String departureCity, String arrivalCity, LocalDate departureDate) {
+        return ticketDao.findAvailableTickets(departureCity, arrivalCity, departureDate);
+    }
 }
