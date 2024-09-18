@@ -64,6 +64,29 @@ public class ClientDao implements IClientDao {
     }
 
     @Override
+    public Client getById(UUID id) {
+        String query = "SELECT * FROM clients WHERE id = ?";
+        try (Connection conn = db.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setObject(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Client client = new Client();
+                client.setId(UUID.fromString(rs.getString("id")));
+                client.setFirstname(rs.getString("firstname"));
+                client.setLastname(rs.getString("lastname"));
+                client.setEmail(rs.getString("email"));
+                client.setPhone(rs.getString("phone"));
+                return client;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public boolean updateClient(Client client) {
         String query = "UPDATE clients SET firstname = ?, lastname = ?, phone = ? WHERE id = ?";
 

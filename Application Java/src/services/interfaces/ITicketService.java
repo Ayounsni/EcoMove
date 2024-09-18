@@ -24,4 +24,8 @@ public interface ITicketService {
     List<Ticket> getAllTickets();
 
     List<Ticket> searchTickets(String departureCity, String arrivalCity, LocalDate departureDate);
+
+    Ticket getById(UUID ticketId);
+
+    Ticket findById(UUID ticketId);
 }

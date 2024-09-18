@@ -1,17 +1,24 @@
 package ui;
 
 import dao.implementations.ClientDao;
+
 import models.entities.Client;
 import services.implementations.ClientService;
+import services.implementations.ReservationService;
+import services.implementations.TicketService;
 import services.interfaces.IClientService;
-
+import services.interfaces.IReservationService;
+import services.interfaces.ITicketService;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class ClientUi {
 
     private final Scanner scanner = new Scanner(System.in);
     private final IClientService clientService;
+    private final ITicketService ticketService = new TicketService();
     private final TicketUi ticketUi = new TicketUi();
+
 
     public ClientUi() {
           this.clientService = new ClientService(new ClientDao());
@@ -74,10 +81,10 @@ public class ClientUi {
 
                 switch (choice) {
                     case 1:
-                        login();
+                        ticketUi.searchAndDisplayTickets();
                         break;
                     case 2:
-                        ticketUi.searchAndDisplayTickets();
+                        login();
                         break;
                     case 3:
                         displayClientInfo(client);
@@ -156,5 +163,8 @@ public class ClientUi {
         System.out.println("Email : " + client.getEmail());
         System.out.println("Numéro de téléphone : " + client.getPhone());
     }
+
+
+
 
 }

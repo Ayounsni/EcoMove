@@ -24,5 +24,7 @@ public interface ITicketDao {
     boolean delete(UUID id);
 
     List<Ticket> findAvailableTickets(String departureCity, String arrivalCity, LocalDate departureDate);
+
+    Ticket getById(UUID ticketId);
 }
 

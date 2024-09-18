@@ -11,16 +11,18 @@ public class Reservation {
     private Timestamp dateReservation;
     private BigDecimal price;
     private ReservationStatus reservationStatus;
+    private Client client;
 
     public Reservation() {
     }
 
 
-    public Reservation(BigDecimal price, ReservationStatus reservationStatus) {
+    public Reservation(BigDecimal price, ReservationStatus reservationStatus, Client client) {
         this.id = UUID.randomUUID();
         this.dateReservation = new Timestamp(System.currentTimeMillis());
         this.price = price;
         this.reservationStatus = reservationStatus;
+        this.client = client;
     }
 
     // Getters et Setters
@@ -54,6 +56,12 @@ public class Reservation {
 
     public void setReservationStatus(ReservationStatus reservationStatus) {
         this.reservationStatus = reservationStatus;
+    }
+    public Client getClient() {
+        return client;
+    }
+    public void setClient(Client client) {
+        this.client = client;
     }
 }
 

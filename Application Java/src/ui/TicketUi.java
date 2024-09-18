@@ -3,16 +3,15 @@ package ui;
 
 
 import dao.implementations.CityDao;
-import models.entities.City;
-import models.entities.Contract;
-import models.entities.Ticket;
+import dao.implementations.ClientDao;
+import models.entities.*;
+import models.enums.ReservationStatus;
 import models.enums.TicketStatus;
 import models.enums.TransportType;
-import services.implementations.CityService;
-import services.implementations.ContractService;
-import services.implementations.PartnerService;
-import services.implementations.TicketService;
+import services.implementations.*;
 import services.interfaces.ICityService;
+import services.interfaces.IClientService;
+import services.interfaces.IReservationService;
 import services.interfaces.ITicketService;
 
 import java.math.BigDecimal;
@@ -28,6 +27,9 @@ public class TicketUi {
     private final ContractService contractService;
     private final PartnerService partnerService = new PartnerService();
     private final ICityService cityService;
+    private final IClientService clientService;
+    private final IReservationService reservationService;
+
 
 
 
@@ -35,6 +37,9 @@ public class TicketUi {
         this.ticketService = new TicketService();
         this.contractService = new ContractService();
         this.cityService = new CityService(new CityDao());
+        this.clientService = new ClientService(new ClientDao());
+        this.reservationService = new ReservationService() ;
+
 
     }
 
@@ -137,7 +142,7 @@ public class TicketUi {
            System.out.println("Ticket deleted.");
        }else {
            System.out.println("Ticket could not be deleted.");
-       };
+       }
     }
 
     public void display() {
@@ -188,9 +193,9 @@ public class TicketUi {
             System.out.println("Aucun billet disponible pour les critères spécifiés.");
         } else {
             for (Ticket ticket : tickets) {
+                System.out.println("ID du ticket : " + ticket.getId());
                 System.out.println("Company Name : " + partnerService.getPartnerName(ticket.getContractId()));
                 System.out.println("Type de transport : " + ticket.getTransportType());
-                System.out.println("Prix d'achat : " + ticket.getPurchasePrice());
                 System.out.println("Prix de vente : " + ticket.getSalePrice());
                 System.out.println("Date de vente : " + ticket.getSaleDate());
                 System.out.println("Date de départ : " + ticket.getDepartureDate());
@@ -202,6 +207,40 @@ public class TicketUi {
                 System.out.println("   Ville d'arrivée : " + ticket.getTrajet().getCityA().getCityName());
                 System.out.println("------------------------------------------");
             }
+            System.out.println("Voulez-vous réserver un ticket ? (oui/non)");
+            String response = scanner.nextLine();
+            if (response.equalsIgnoreCase("oui")) {
+                reserveTicket();
+            } else {
+                System.out.println("Retour au menu principal.");
+            }
         }
     }
+
+    public void reserveTicket() {
+        System.out.print("Enter Ticket ID to reserve: ");
+        UUID ticketId = UUID.fromString(scanner.nextLine());
+
+        Ticket ticket = ticketService.findById(ticketId);
+
+        if (ticket != null && ticket.getTicketStatus() == TicketStatus.PENDING) {
+            System.out.print("Enter your email to associate this reservation with a client: ");
+            String clientEmail = scanner.nextLine();
+
+            Client client = clientService.getClientByEmail(clientEmail);
+            if (client != null) {
+
+                Reservation reservation = new Reservation(ticket.getSalePrice(), ReservationStatus.CONFIRMED, client);
+                reservationService.reserveTicket(reservation);
+                ticketService.updateTicketStatus(ticket.getId(), TicketStatus.SOLD);
+
+                System.out.println("Reservation created successfully for ticket: " + ticketId);
+            } else {
+                System.out.println("Client not found.");
+            }
+        } else {
+            System.out.println("Ticket not available for reservation.");
+        }
+    }
+
 }

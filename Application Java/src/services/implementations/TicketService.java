@@ -61,4 +61,13 @@ public class TicketService implements ITicketService {
     public List<Ticket> searchTickets(String departureCity, String arrivalCity, LocalDate departureDate) {
         return ticketDao.findAvailableTickets(departureCity, arrivalCity, departureDate);
     }
+
+    @Override
+    public Ticket getById(UUID ticketId) {
+        return ticketDao.getById(ticketId);
+    }
+
+    public Ticket findById(UUID ticketId) {
+        return ticketDao.findById(ticketId);
+    }
 }

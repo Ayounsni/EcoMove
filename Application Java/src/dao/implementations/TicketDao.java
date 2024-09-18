@@ -177,4 +177,34 @@ public class TicketDao implements ITicketDao {
         }
         return tickets;
     }
+    @Override
+    public Ticket getById(UUID ticketId) {
+        String query = "SELECT * FROM tickets WHERE id = ?";
+        try (Connection connection = db.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setObject(1, ticketId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                // Extraction des champs depuis le ResultSet
+                UUID id = UUID.fromString(rs.getString("id"));
+                TransportType transportType = TransportType.valueOf(rs.getString("transport_type"));
+                BigDecimal purchasePrice = rs.getBigDecimal("purchase_price");
+                BigDecimal salePrice = rs.getBigDecimal("sale_price");
+                LocalDate saleDate = rs.getDate("sale_date").toLocalDate();
+                LocalDate departureDate = rs.getDate("departure_date").toLocalDate();
+                LocalTime departureTime = rs.getTime("departure_time").toLocalTime();
+                TicketStatus ticketStatus = TicketStatus.valueOf(rs.getString("ticket_status"));
+                UUID contractId = UUID.fromString(rs.getString("contract_id"));
+
+                // On peut également récupérer Trajet via une autre méthode
+                UUID trajetId = UUID.fromString(rs.getString("trajet_id"));
+                Trajet trajet = trajetDao.findById(trajetId); // Vous devrez avoir un TrajetDao avec une méthode getById()
+
+                // Retourner un objet Ticket
+                return new Ticket(transportType, purchasePrice, salePrice, saleDate, departureDate, departureTime, contractId, ticketStatus, trajet, id);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
