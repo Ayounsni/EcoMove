@@ -9,10 +9,7 @@ import models.entities.Reservation;
 import models.enums.ReservationStatus;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.UUID;
 
 public class ReservationDao implements IReservationDao {
@@ -70,5 +67,20 @@ public class ReservationDao implements IReservationDao {
         }
         return null;
     }
+    @Override
+    public boolean updateReservationStatus(UUID reservationId, ReservationStatus reservationStatus) {
+        try (Connection connection = db.getConnection()) {
+            String query = "UPDATE reservations SET reservationStatus = ?::reservationstatus WHERE id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setObject(1, reservationStatus.name(), java.sql.Types.OTHER);
+            statement.setObject(2, reservationId);
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
 
 }

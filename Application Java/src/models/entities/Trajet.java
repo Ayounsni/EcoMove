@@ -34,9 +34,6 @@ public class Trajet {
     }
 
 
-
-
-    // Getters et Setters
     public UUID getId() {
         return id;
     }

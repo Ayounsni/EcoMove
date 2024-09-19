@@ -4,15 +4,14 @@ package ui;
 
 import dao.implementations.CityDao;
 import dao.implementations.ClientDao;
+import dao.implementations.ReservationTicketDao;
+import dao.interfaces.IReservationTicketDao;
 import models.entities.*;
 import models.enums.ReservationStatus;
 import models.enums.TicketStatus;
 import models.enums.TransportType;
 import services.implementations.*;
-import services.interfaces.ICityService;
-import services.interfaces.IClientService;
-import services.interfaces.IReservationService;
-import services.interfaces.ITicketService;
+import services.interfaces.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -29,6 +28,7 @@ public class TicketUi {
     private final ICityService cityService;
     private final IClientService clientService;
     private final IReservationService reservationService;
+    private final IReservationTicketService reservationTicketService;
 
 
 
@@ -39,8 +39,7 @@ public class TicketUi {
         this.cityService = new CityService(new CityDao());
         this.clientService = new ClientService(new ClientDao());
         this.reservationService = new ReservationService() ;
-
-
+        this.reservationTicketService = new ReservationTicketService();
     }
 
     public void showMenu() {
@@ -231,8 +230,10 @@ public class TicketUi {
             if (client != null) {
 
                 Reservation reservation = new Reservation(ticket.getSalePrice(), ReservationStatus.CONFIRMED, client);
+                ReservationTicket reservationTicket = new ReservationTicket(ticket, reservation);
                 reservationService.reserveTicket(reservation);
                 ticketService.updateTicketStatus(ticket.getId(), TicketStatus.SOLD);
+                reservationTicketService.addReservationTicket(reservationTicket);
 
                 System.out.println("Reservation created successfully for ticket: " + ticketId);
             } else {

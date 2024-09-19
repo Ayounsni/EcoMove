@@ -2,13 +2,20 @@ package ui;
 
 import dao.implementations.ClientDao;
 
+import dao.implementations.ReservationDao;
+import dao.interfaces.IReservationDao;
 import models.entities.Client;
+import models.entities.Reservation;
+import models.entities.ReservationTicket;
+import models.enums.ReservationStatus;
 import services.implementations.ClientService;
 import services.implementations.ReservationService;
-import services.implementations.TicketService;
+import services.implementations.ReservationTicketService;
 import services.interfaces.IClientService;
 import services.interfaces.IReservationService;
-import services.interfaces.ITicketService;
+import services.interfaces.IReservationTicketService;
+
+import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -16,12 +23,14 @@ public class ClientUi {
 
     private final Scanner scanner = new Scanner(System.in);
     private final IClientService clientService;
-    private final ITicketService ticketService = new TicketService();
     private final TicketUi ticketUi = new TicketUi();
+    private final IReservationService reservationService = new ReservationService();
+    private final IReservationTicketService reservationTicketService;
 
 
     public ClientUi() {
-          this.clientService = new ClientService(new ClientDao());
+        this.clientService = new ClientService(new ClientDao());
+        this.reservationTicketService = new ReservationTicketService();
     }
 
     public void showMenu() {
@@ -72,9 +81,10 @@ public class ClientUi {
 
                 System.out.println("1. Chercher des tickets");
                 System.out.println("2. Mes reservations");
-                System.out.println("3. Mon profil");
-                System.out.println("4. Modifier mes informations");
-                System.out.println("5. Deconnexion");
+                System.out.println("3. Annuler une réservation");
+                System.out.println("4. Mon profil");
+                System.out.println("5. Modifier mes informations");
+                System.out.println("6. Deconnexion");
                 System.out.print("Choisissez une option : ");
                 int choice = scanner.nextInt();
                 scanner.nextLine();
@@ -84,15 +94,18 @@ public class ClientUi {
                         ticketUi.searchAndDisplayTickets();
                         break;
                     case 2:
-                        login();
+                        showClientReservations(client);
                         break;
                     case 3:
-                        displayClientInfo(client);
+                        updateReservationStatus();
                         break;
                     case 4:
-                        updateClientInfo(client);
+                        displayClientInfo(client);
                         break;
                     case 5:
+                        updateClientInfo(client);
+                        break;
+                    case 6:
                         running = false;
                         break;
                     default:
@@ -164,6 +177,42 @@ public class ClientUi {
         System.out.println("Numéro de téléphone : " + client.getPhone());
     }
 
+    private void showClientReservations(Client client) {
+        List<ReservationTicket> reservationTickets = reservationTicketService.getReservationsByClientId(client);
+
+        if (reservationTickets.isEmpty()) {
+            System.out.println("Vous n'avez aucune réservation.");
+        } else {
+            System.out.println("Vos réservations : ");
+            for (ReservationTicket reservationTicket : reservationTickets) {
+                System.out.println("Reservation ID: " + reservationTicket.getReservation().getId());
+                System.out.println("Date de réservation: " + reservationTicket.getReservation().getDateReservation());
+                System.out.println("Prix de réservation: " + reservationTicket.getReservation().getPrice());
+                System.out.println("Transport Type: " + reservationTicket.getTicket().getTransportType());
+                System.out.println("Ville depart: " + reservationTicket.getTicket().getTrajet().getCityDepart().getCityName());
+                System.out.println("Ville arrive: " + reservationTicket.getTicket().getTrajet().getCityA().getCityName());
+                System.out.println("Date depart:" + reservationTicket.getTicket().getDepartureDate());
+                System.out.println("Horaire : " + reservationTicket.getTicket().getDepartureTime());
+
+                System.out.println("-------------------------");
+            }
+        }
+    }
+    public void updateReservationStatus() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Entrez l'ID de la réservation que vous voulez annuler :");
+        String reservationIdInput = scanner.nextLine();
+        UUID reservationId = UUID.fromString(reservationIdInput);
+
+        boolean isUpdated = reservationService.updateReservationStatus(reservationId, ReservationStatus.CANCELED);
+
+        if (isUpdated) {
+            System.out.println("La réservation a été annuler avec succès");
+        } else {
+            System.out.println("L'annulation a échoué.");
+        }
+    }
 
 
 

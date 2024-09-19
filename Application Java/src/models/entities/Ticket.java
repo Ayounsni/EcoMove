@@ -9,7 +9,7 @@ import java.time.LocalTime;
 import java.util.UUID;
 
 public class Ticket {
-    private final UUID id;
+    private UUID id;
     private TransportType transportType;
     private BigDecimal purchasePrice;
     private BigDecimal salePrice;
@@ -19,6 +19,9 @@ public class Ticket {
     private TicketStatus ticketStatus;
     private UUID contractId;
     private Trajet trajet;
+
+    public Ticket() {
+    }
 
 
 
@@ -52,6 +55,10 @@ public class Ticket {
 
     public UUID getId() {
         return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public TransportType getTransportType() {
